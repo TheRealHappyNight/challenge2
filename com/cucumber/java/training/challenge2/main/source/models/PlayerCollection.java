@@ -9,7 +9,15 @@ import java.util.*;
 
 public class PlayerCollection {
     List<Player> players = Collections.synchronizedList(new ArrayList<>());
-    private Processable processor;
+
+    public PlayerCollection() { }
+
+    public PlayerCollection(Player[] players) {
+        if (null == players) {
+            return;
+        }
+        this.players.addAll(Arrays.asList(players));
+    }
 
     public void addPlayer(Player player) {
         players.add(player);
@@ -32,7 +40,7 @@ public class PlayerCollection {
             throw new IllegalArgumentException();
         }
 
-        return this.processor.process(new ArrayList<>(this.players));
+        return processor.process(new ArrayList<>(this.players));
     }
 
     public void printToFile(String fileName) throws IOException {

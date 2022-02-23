@@ -48,6 +48,10 @@ public class Player implements Printable {
         return age;
     }
 
+    public boolean isParticipating() {
+        return this.tickets.size() != 0;
+    }
+
     public ArrayList<LotteryTicket> getTickets() {
         return this.tickets;
     }
@@ -62,7 +66,7 @@ public class Player implements Printable {
         stringBuilder.append(name).append(" (").append(age).append(")\n");
         int count = 1;
         for(LotteryTicket lotteryTicket : tickets) {
-            stringBuilder.append("Ticket ").append(count++).append(" <").append(lotteryTicket.getUID());
+            stringBuilder.append("Ticket ").append(count++).append(" <");
             stringBuilder.append(lotteryTicket.print()).append("\n");
         }
         return stringBuilder.toString();

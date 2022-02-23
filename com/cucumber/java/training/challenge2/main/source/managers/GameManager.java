@@ -1,9 +1,11 @@
 package source.managers;
 
+import source.interfaces.Processable;
 import source.models.Player;
 import source.models.PlayerCollection;
 import source.settings.LotterySettings;
 import source.singleton.GameSettings;
+import source.statistics.Processors;
 import source.threads.PlayerBuilder;
 import source.threads.generators.RandomGeneratorSupplier;
 import source.threads.generators.TicketUIDSupplier;
@@ -34,7 +36,7 @@ public class GameManager {
             e.printStackTrace();
         }
 
-
+        generateStatistics();
     }
 
     private void readPlayer(String fileName) throws IOException {
@@ -76,6 +78,32 @@ public class GameManager {
                 }
             }
         }
+    }
+
+    private void generateStatistics() {
+        try {
+            processStatistic(Processors::getPlayersThatAreParticipatingAndArePreviousWinners,
+                    "FirstStream.txt");
+
+            processStatistic(Processors::getPlayersThatUsedLastTimeWinningCombination,
+                    "SecondStream.txt");
+
+            processStatistic(Processors::getPlayerWithMostTickets,
+                    "ThirdStream.txt");
+
+            processStatistic(Processors::getPlayersWithTicketsThatHave13,
+                    "FourthStream.txt");
+
+            processStatistic(Processors::getPlayersWith4ofTheMostUsedNumbers,
+                    "FifthStream.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void processStatistic(Processable processable, String fileName) throws IOException {
+        PlayerCollection statistic = new PlayerCollection(players.process(processable));
+        statistic.printToFile(fileName);
     }
 
     public void addPlayer(Player player) {

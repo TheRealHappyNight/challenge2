@@ -62,6 +62,10 @@ public class LotterySettings implements Cloneable{
         return this.noCurrentPlayers.get();
     }
 
+    public boolean isPreviousWinner(String name) {
+        return this.previousWinners.contains(name);
+    }
+
     public int getNoPreviousWinners() {
         return this.previousWinners.size();
     }
@@ -84,6 +88,16 @@ public class LotterySettings implements Cloneable{
         }
 
         return this.previousLuckyNumbers.get(index);
+    }
+
+    public boolean previousUsedCombination(LotteryTicket ticket) {
+        for(LotteryTicket t : this.previousLuckyNumbers) {
+            if (t.equals(ticket)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void incrementNoCurrentPlayers() {

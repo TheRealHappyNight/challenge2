@@ -66,6 +66,10 @@ public class LotteryTicket implements Cloneable, Printable, Comparable<LotteryTi
         return true;
     }
 
+    public boolean contains(int num) {
+        return Arrays.stream(this.luckyNumbers).anyMatch(val -> val == num);
+    }
+
     @Override
     public LotteryTicket clone() {
         return new LotteryTicket(this);
