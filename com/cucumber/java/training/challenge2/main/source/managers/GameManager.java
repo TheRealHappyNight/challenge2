@@ -7,6 +7,8 @@ import source.settings.LotterySettings;
 import source.singleton.GameSettings;
 import source.statistics.Processors;
 import source.threads.PlayerBuilder;
+import source.threads.game.GameLoop;
+import source.threads.game.WinnerFinder;
 import source.threads.generators.RandomGeneratorSupplier;
 import source.threads.generators.TicketUIDSupplier;
 
@@ -15,8 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 
 public class GameManager {
     private final PlayerCollection players;
@@ -37,6 +38,8 @@ public class GameManager {
         }
 
         generateStatistics();
+
+        run();
     }
 
     private void readPlayer(String fileName) throws IOException {
@@ -104,6 +107,33 @@ public class GameManager {
     private void processStatistic(Processable processable, String fileName) throws IOException {
         PlayerCollection statistic = new PlayerCollection(players.process(processable));
         statistic.printToFile(fileName);
+    }
+
+    private void run() {
+        int initialSeed = 34535656;
+        GameLoop gameLoop = new GameLoop(initialSeed);
+        CompletableFuture.runAsync(gameLoop);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        WinnerFinder winnerFinder = new WinnerFinder(gameLoop, players);
+        CompletableFuture<Void> gameThread = CompletableFuture.runAsync(winnerFinder,executor);
+
+        if (!gameThread.isDone()) {
+            try {
+                gameThread.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            executor.shutdownNow();
+        }
     }
 
     public void addPlayer(Player player) {

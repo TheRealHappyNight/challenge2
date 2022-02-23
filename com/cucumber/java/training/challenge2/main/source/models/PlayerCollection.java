@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class PlayerCollection {
-    List<Player> players = Collections.synchronizedList(new ArrayList<>());
+    private final List<Player> players = Collections.synchronizedList(new ArrayList<>());
 
     public PlayerCollection() { }
 
@@ -20,15 +20,15 @@ public class PlayerCollection {
     }
 
     public void addPlayer(Player player) {
-        players.add(player);
+        this.players.add(player);
     }
 
     public Player getPlayer(String name) {
-        return players.parallelStream().filter(p -> p.getName().equalsIgnoreCase(name)).findFirst().get();
+        return this.players.parallelStream().filter(p -> p.getName().equalsIgnoreCase(name)).findFirst().get();
     }
 
     public void removePlayer(String name) {
-        players.removeIf(p -> p.getName().equalsIgnoreCase(name));
+        this.players.removeIf(p -> p.getName().equalsIgnoreCase(name));
     }
 
     public int getNoPlayers() {
@@ -46,10 +46,14 @@ public class PlayerCollection {
     public void printToFile(String fileName) throws IOException {
         if (null != fileName && !" ".equals(fileName)) {
             try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileName))) {
-                for (Player player : players) {
+                for (Player player : this.players) {
                     bufferedWriter.write(player.print());
                 }
             }
         }
+    }
+
+    public ArrayList<Player> getAllPlayers() {
+        return new ArrayList<>(this.players);
     }
 }

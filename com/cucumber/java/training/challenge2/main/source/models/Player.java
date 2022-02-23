@@ -2,15 +2,13 @@ package source.models;
 
 import source.interfaces.Printable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Player implements Printable {
     private final String name;
     private final int age;
     private final ArrayList<LotteryTicket> tickets;
-    private final Set<String> winningTicketsId;
+    private Set<String> winningTicketsId;
 
     public Player(String name, int age, int noTickets) {
         this.name = name;
@@ -30,14 +28,33 @@ public class Player implements Printable {
     }
 
     public boolean checkWinningCombination(int[] winningNumbers) {
+        Set<String> id = new HashSet<>();
+        boolean found = false;
+
         LotteryTicket lotteryTicket = new LotteryTicket("copy", winningNumbers.length);
         lotteryTicket.setLuckyNumbers(winningNumbers);
-        for(LotteryTicket ticket : tickets) {
+        for(LotteryTicket ticket : this.tickets) {
             if(ticket.equals(lotteryTicket)) {
-                return true;
+                id.add(ticket.getUID());
+                found = true;
             }
         }
-        return false;
+        this.winningTicketsId = id;
+        return found;
+    }
+
+    public boolean checkPartialWinningCombination(int[] partialWinningNumbers) {
+        Set<String> id = new HashSet<>();
+        boolean found = false;
+        for(LotteryTicket ticket : this.tickets) {
+            if (ticket.containsSequence(partialWinningNumbers)) {
+                id.add(ticket.getUID());
+                found = true;
+            }
+        }
+
+        this.winningTicketsId = id;
+        return found;
     }
 
     public String getName() {

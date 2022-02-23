@@ -3,6 +3,7 @@ package source.models;
 import source.exceptions.LotteryTicketException;
 import source.interfaces.Printable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -68,6 +69,15 @@ public class LotteryTicket implements Cloneable, Printable, Comparable<LotteryTi
 
     public boolean contains(int num) {
         return Arrays.stream(this.luckyNumbers).anyMatch(val -> val == num);
+    }
+
+    public boolean containsSequence(int[] list) {
+        for(int num : list) {
+            if (!contains(num)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
