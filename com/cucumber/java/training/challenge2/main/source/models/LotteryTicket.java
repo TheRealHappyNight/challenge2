@@ -1,6 +1,5 @@
 package source.models;
 
-import org.w3c.dom.ls.LSOutput;
 import source.exceptions.LotteryTicketException;
 import source.interfaces.Printable;
 
@@ -21,8 +20,8 @@ public class LotteryTicket implements Cloneable, Printable, Comparable<LotteryTi
     private LotteryTicket(LotteryTicket lotteryTicket) {
         this.UID = lotteryTicket.UID;
         this.noNumbers = lotteryTicket.noNumbers;
-        setLuckyNumbers(lotteryTicket.luckyNumbers);
         this.luckyNumbers = new int[this.noNumbers];
+        setLuckyNumbers(lotteryTicket.luckyNumbers);
     }
 
     public void setLuckyNumbers(int[] luckyNumbers) {
@@ -41,6 +40,10 @@ public class LotteryTicket implements Cloneable, Printable, Comparable<LotteryTi
 
         return Arrays.stream(luckyNumbers).distinct().filter((number) -> number > 0 && number < 50)
                 .count() == this.noNumbers;
+    }
+
+    public int getNoNumbers() {
+        return this.noNumbers;
     }
 
     public int getNumber(int index) {
@@ -95,11 +98,11 @@ public class LotteryTicket implements Cloneable, Printable, Comparable<LotteryTi
 
     @Override
     public String toString() {
-        return Print();
+        return print();
     }
 
     @Override
-    public String Print() {
+    public String print() {
         StringBuilder output = new StringBuilder(this.UID + "[");
         for(int index = 0; index < this.luckyNumbers.length - 1; ++index) {
             output.append(this.luckyNumbers[index]).append(",");
