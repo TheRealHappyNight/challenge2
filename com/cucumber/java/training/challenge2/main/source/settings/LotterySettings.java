@@ -36,8 +36,8 @@ public class LotterySettings implements Cloneable{
                 }
 
                 LotteryTicket lotteryTicket = new LotteryTicket("Winner" + (count++), winnerNumbers.length);
-                if (lotteryTicket.isArrayValid(luckyNumbers)) {
-                    lotteryTicket.setLuckyNumbers(luckyNumbers);
+                lotteryTicket.setLuckyNumbers(luckyNumbers);
+                if (lotteryTicket.isLuckyNumbersValid()) {
                     this.previousLuckyNumbers.add(lotteryTicket);
                 }
             }

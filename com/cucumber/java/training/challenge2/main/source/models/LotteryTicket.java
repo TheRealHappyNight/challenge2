@@ -25,21 +25,25 @@ public class LotteryTicket implements Cloneable, Printable, Comparable<LotteryTi
     }
 
     public void setLuckyNumbers(int[] luckyNumbers) {
-        if (!isArrayValid(luckyNumbers)) {
-            return;
-        }
-
         luckyNumbers = Arrays.stream(luckyNumbers).sorted().toArray();
         System.arraycopy(luckyNumbers, 0, this.luckyNumbers, 0, luckyNumbers.length);
     }
 
-    public boolean isArrayValid(int[] luckyNumbers) {
-        if (null == luckyNumbers || luckyNumbers.length != this.noNumbers) {
+    /**
+     * To use after setting LuckyNumber
+     * @return Whether the combination is valid
+     */
+    public boolean isLuckyNumbersValid() {
+        if (null == this.luckyNumbers || this.luckyNumbers.length != this.noNumbers) {
             return false;
         }
 
         return Arrays.stream(luckyNumbers).distinct().filter((number) -> number > 0 && number < 50)
                 .count() == this.noNumbers;
+    }
+
+    public String getUID() {
+        return this.UID;
     }
 
     public int getNoNumbers() {
