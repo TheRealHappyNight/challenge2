@@ -1,5 +1,6 @@
 package source.threads.game;
 
+import source.models.LotteryTicket;
 import source.models.Player;
 import source.models.PlayerCollection;
 
@@ -40,7 +41,7 @@ public class WinnerFinder implements Runnable {
             System.arraycopy(this.winningCombination, 0, partialCombination, 0, foundNumbers);
             final int[] finalPartialCombination = partialCombination;
             this.participatingPlayers = this.participatingPlayers.parallelStream()
-                    .filter(p -> p.checkPartialWinningCombination(finalPartialCombination))
+                    .filter(p -> p.checkWinningCombination(finalPartialCombination))
                     .collect(Collectors.toList());
 
             remainingTickets =  participatingPlayers.parallelStream().mapToInt(p -> p.getWinningTicketsId().size())
@@ -48,16 +49,16 @@ public class WinnerFinder implements Runnable {
             System.out.println(remainingTickets + " lucky combinations");
         }
 
-        this.participatingPlayers = this.participatingPlayers.parallelStream()
-                .filter(p -> p.checkWinningCombination(this.winningCombination))
-                .collect(Collectors.toList());
 
+        LotteryTicket lotteryTicket = new LotteryTicket("WinningTicket", 6);
+        lotteryTicket.setLuckyNumbers(this.winningCombination);
+        System.out.println(lotteryTicket);
         if (this.participatingPlayers.size() == 0) {
             System.out.println("No winners");
         }
         else {
             for (Player winner : this.participatingPlayers) {
-                System.out.println(winner);
+                System.out.println(winner.printWinnerTickets());
             }
         }
     }

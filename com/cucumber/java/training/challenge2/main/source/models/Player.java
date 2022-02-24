@@ -27,23 +27,7 @@ public class Player implements Printable {
         }
     }
 
-    public boolean checkWinningCombination(int[] winningNumbers) {
-        Set<String> id = new HashSet<>();
-        boolean found = false;
-
-        LotteryTicket lotteryTicket = new LotteryTicket("copy", winningNumbers.length);
-        lotteryTicket.setLuckyNumbers(winningNumbers);
-        for(LotteryTicket ticket : this.tickets) {
-            if(ticket.equals(lotteryTicket)) {
-                id.add(ticket.getUID());
-                found = true;
-            }
-        }
-        this.winningTicketsId = id;
-        return found;
-    }
-
-    public boolean checkPartialWinningCombination(int[] partialWinningNumbers) {
+    public boolean checkWinningCombination(int[] partialWinningNumbers) {
         Set<String> id = new HashSet<>();
         boolean found = false;
         for(LotteryTicket ticket : this.tickets) {
@@ -83,6 +67,21 @@ public class Player implements Printable {
         stringBuilder.append(name).append(" (").append(age).append(")\n");
         int count = 1;
         for(LotteryTicket lotteryTicket : tickets) {
+            stringBuilder.append("Ticket ").append(count++).append(" <");
+            stringBuilder.append(lotteryTicket.print()).append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
+    public String printWinnerTickets() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(name).append(" (").append(age).append(")\n");
+        int count = 1;
+        for(LotteryTicket lotteryTicket : tickets) {
+            if (!this.winningTicketsId.contains(lotteryTicket.getUID())) {
+                continue;
+            }
+
             stringBuilder.append("Ticket ").append(count++).append(" <");
             stringBuilder.append(lotteryTicket.print()).append("\n");
         }
